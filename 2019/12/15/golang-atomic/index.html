@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-128x128.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="原子操作就是不可中断的操作，外界是看不到原子操作的中间状态，要么看到原子操作已经完成，要么看到原子操作已经结束。在某个值的原子操作执行的过程中，CPU绝对不会再去执行其他针对该值的操作，那么其他操作也是原子操作。Go语言中提供的原子操作都是非侵入式的，在标准库代码包sync&#x2F;atomic中提供了相关的原子函数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang中原子操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;15&#x2F;golang-atomic&#x2F;index.html">
+<meta property="og:site_name" content="涛哥的小屋">
+<meta property="og:description" content="原子操作就是不可中断的操作，外界是看不到原子操作的中间状态，要么看到原子操作已经完成，要么看到原子操作已经结束。在某个值的原子操作执行的过程中，CPU绝对不会再去执行其他针对该值的操作，那么其他操作也是原子操作。Go语言中提供的原子操作都是非侵入式的，在标准库代码包sync&#x2F;atomic中提供了相关的原子函数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-15T06:57:02.000Z">
+<meta property="article:modified_time" content="2019-12-15T08:10:03.337Z">
+<meta property="article:author" content="chris.xin">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/15/golang-atomic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Golang中原子操作 | 涛哥的小屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">涛哥的小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/15/golang-atomic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/icon-256x256.ico">
+      <meta itemprop="name" content="chris.xin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="涛哥的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang中原子操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-12-15 14:57:02 / 修改时间：16:10:03" itemprop="dateCreated datePublished" datetime="2019-12-15T14:57:02+08:00">2019-12-15</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>原子操作就是不可中断的操作，外界是看不到原子操作的中间状态，要么看到原子操作已经完成，要么看到原子操作已经结束。在某个值的原子操作执行的过程中，CPU绝对不会再去执行其他针对该值的操作，那么其他操作也是原子操作。Go语言中提供的原子操作都是非侵入式的，在标准库代码包sync/atomic中提供了相关的原子函数。</p>
+<a id="more"></a>
+
+<h3 id="1-Store"><a href="#1-Store" class="headerlink" title="1. Store"></a>1. Store</h3><p>atomic.Store…为变量设置值</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func <span class="constructor">StoreInt32(<span class="params">addr</span> <span class="operator">*</span><span class="params">int32</span>, <span class="params">val</span> <span class="params">int32</span>)</span></span><br><span class="line">func <span class="constructor">StoreInt64(<span class="params">addr</span> <span class="operator">*</span><span class="params">int64</span>, <span class="params">val</span> <span class="params">int64</span>)</span></span><br><span class="line">func <span class="constructor">StoreUint32(<span class="params">addr</span> <span class="operator">*</span><span class="params">uint32</span>, <span class="params">val</span> <span class="params">uint32</span>)</span></span><br><span class="line">func <span class="constructor">StoreUint64(<span class="params">addr</span> <span class="operator">*</span><span class="params">uint64</span>, <span class="params">val</span> <span class="params">uint64</span>)</span></span><br><span class="line">func <span class="constructor">StoreUintptr(<span class="params">addr</span> <span class="operator">*</span><span class="params">uintptr</span>, <span class="params">val</span> <span class="params">uintptr</span>)</span></span><br><span class="line">func <span class="constructor">StorePointer(<span class="params">addr</span> <span class="operator">*</span><span class="params">unsafe</span>.Pointer, <span class="params">val</span> <span class="params">unsafe</span>.Pointer)</span> <span class="comment">//设置指针</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Load"><a href="#2-Load" class="headerlink" title="2. Load"></a>2. Load</h3><p>atomic.Store…获取变量值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadInt32</span><span class="params">(addr *<span class="keyword">int32</span>)</span> <span class="params">(val <span class="keyword">int32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadInt64</span><span class="params">(addr *<span class="keyword">int64</span>)</span> <span class="params">(val <span class="keyword">int64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadUint32</span><span class="params">(addr *<span class="keyword">uint32</span>)</span> <span class="params">(val <span class="keyword">uint32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadUint64</span><span class="params">(addr *<span class="keyword">uint64</span>)</span> <span class="params">(val <span class="keyword">uint64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadUintptr</span><span class="params">(addr *<span class="keyword">uintptr</span>)</span> <span class="params">(val <span class="keyword">uintptr</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LoadPointer</span><span class="params">(addr *unsafe.Pointer)</span> <span class="params">(val unsafe.Pointer)</span> //获取指针</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Add"><a href="#3-Add" class="headerlink" title="3. Add"></a>3. Add</h3><p>atomic.Add…修改变量值，delta&gt;0为加，delta&lt;0为减， 返回新值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt32</span><span class="params">(addr *<span class="keyword">int32</span>, delta <span class="keyword">int32</span>)</span> <span class="params">(<span class="built_in">new</span> <span class="keyword">int32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddUint32</span><span class="params">(addr *<span class="keyword">uint32</span>, delta <span class="keyword">uint32</span>)</span> <span class="params">(<span class="built_in">new</span> <span class="keyword">uint32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt64</span><span class="params">(addr *<span class="keyword">int64</span>, delta <span class="keyword">int64</span>)</span> <span class="params">(<span class="built_in">new</span> <span class="keyword">int64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddUint64</span><span class="params">(addr *<span class="keyword">uint64</span>, delta <span class="keyword">uint64</span>)</span> <span class="params">(<span class="built_in">new</span> <span class="keyword">uint64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddUintptr</span><span class="params">(addr *<span class="keyword">uintptr</span>, delta <span class="keyword">uintptr</span>)</span> <span class="params">(<span class="built_in">new</span> <span class="keyword">uintptr</span>)</span> //实为指针移动为止</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-Swap"><a href="#4-Swap" class="headerlink" title="4. Swap"></a>4. Swap</h3><p>atomic.Add…交换变量值，设置新值，返回老值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapInt32</span><span class="params">(addr *<span class="keyword">int32</span>, <span class="built_in">new</span> <span class="keyword">int32</span>)</span> <span class="params">(old <span class="keyword">int32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapInt64</span><span class="params">(addr *<span class="keyword">int64</span>, <span class="built_in">new</span> <span class="keyword">int64</span>)</span> <span class="params">(old <span class="keyword">int64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapUint32</span><span class="params">(addr *<span class="keyword">uint32</span>, <span class="built_in">new</span> <span class="keyword">uint32</span>)</span> <span class="params">(old <span class="keyword">uint32</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapUint64</span><span class="params">(addr *<span class="keyword">uint64</span>, <span class="built_in">new</span> <span class="keyword">uint64</span>)</span> <span class="params">(old <span class="keyword">uint64</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapUintptr</span><span class="params">(addr *<span class="keyword">uintptr</span>, <span class="built_in">new</span> <span class="keyword">uintptr</span>)</span> <span class="params">(old <span class="keyword">uintptr</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SwapPointer</span><span class="params">(addr *unsafe.Pointer, <span class="built_in">new</span> unsafe.Pointer)</span> <span class="params">(old unsafe.Pointer)</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-CAS"><a href="#4-CAS" class="headerlink" title="4. CAS"></a>4. CAS</h3><p>CAS的全称是Compare And Swap 即比较和交换的意思, 其包括两个部分，第一需要先比较，比较通过后然后再交换；看起来这是两步操作，但是由于底层硬件的支持，使两步操作能一步完成，从而保证了原子性，避免了独占锁的资源浪费。Golang atomic包中已经完整的支持的CAS操作  </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapInt32</span><span class="params">(addr *<span class="keyword">int32</span>, old, <span class="built_in">new</span> <span class="keyword">int32</span>)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapInt64</span><span class="params">(addr *<span class="keyword">int64</span>, old, <span class="built_in">new</span> <span class="keyword">int64</span>)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapUint32</span><span class="params">(addr *<span class="keyword">uint32</span>, old, <span class="built_in">new</span> <span class="keyword">uint32</span>)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapUint64</span><span class="params">(addr *<span class="keyword">uint64</span>, old, <span class="built_in">new</span> <span class="keyword">uint64</span>)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapUintptr</span><span class="params">(addr *<span class="keyword">uintptr</span>, old, <span class="built_in">new</span> <span class="keyword">uintptr</span>)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CompareAndSwapPointer</span><span class="params">(addr *unsafe.Pointer, old, <span class="built_in">new</span> unsafe.Pointer)</span> <span class="params">(swapped <span class="keyword">bool</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>这个函数有三个参数，第一个是目标数据的地址，第二个是目标数据的旧值，第三个则是等待更新的新值。每次CAS都会用old和addr内的数据进行比较，如果数值相等，则执行操作，用new覆盖addr内的旧值，如果数据不相等，则忽略后面的操作。在高并发的情况下，单次CAS的执行成功率会降低，因此需要配合循环语句for，形成一个for+atmoc的类似自旋乐观锁的操作。   </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/14/golang-sync/" rel="prev" title="golang多线程编发之Sync包">
+      <i class="fa fa-chevron-left"></i> golang多线程编发之Sync包
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/15/golang-restart/" rel="next" title="Golang HTTP服务热重启">
+      Golang HTTP服务热重启 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Store"><span class="nav-number">1.</span> <span class="nav-text">1. Store</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Load"><span class="nav-number">2.</span> <span class="nav-text">2. Load</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Add"><span class="nav-number">3.</span> <span class="nav-text">3. Add</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Swap"><span class="nav-number">4.</span> <span class="nav-text">4. Swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CAS"><span class="nav-number">5.</span> <span class="nav-text">4. CAS</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chris.xin"
+      src="/images/icon-256x256.ico">
+  <p class="site-author-name" itemprop="name">chris.xin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chrisxrepo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chrisxrepo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/xinchuantao@qq.com" title="E-Mail → xinchuantao@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chris.xin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

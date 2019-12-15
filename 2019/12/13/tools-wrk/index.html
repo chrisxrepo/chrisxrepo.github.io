@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-128x128.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="&amp;emsp;&amp;emsp;以前一说到http的压力测试工具，多数人会说 ab、webbench、siege。 但这些工具不管是性能还是复杂度已经不能满足我们的需求了。 用wrk只是为了更好的获取吞吐。   1.WRK安装&amp;emsp;&amp;emsp;Mac  brew install mac&amp;emsp;&amp;emsp;Linux https:&#x2F;&#x2F;github.com&#x2F;wg&#x2F;wrk.git &amp;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="压测工具Wrk使用">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;13&#x2F;tools-wrk&#x2F;index.html">
+<meta property="og:site_name" content="涛哥的小屋">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;以前一说到http的压力测试工具，多数人会说 ab、webbench、siege。 但这些工具不管是性能还是复杂度已经不能满足我们的需求了。 用wrk只是为了更好的获取吞吐。   1.WRK安装&amp;emsp;&amp;emsp;Mac  brew install mac&amp;emsp;&amp;emsp;Linux https:&#x2F;&#x2F;github.com&#x2F;wg&#x2F;wrk.git &amp;&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;13&#x2F;tools-wrk&#x2F;wrk1.png">
+<meta property="article:published_time" content="2019-12-13T06:57:08.000Z">
+<meta property="article:modified_time" content="2019-12-15T08:08:21.568Z">
+<meta property="article:author" content="chris.xin">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;13&#x2F;tools-wrk&#x2F;wrk1.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/13/tools-wrk/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>压测工具Wrk使用 | 涛哥的小屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">涛哥的小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/13/tools-wrk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/icon-256x256.ico">
+      <meta itemprop="name" content="chris.xin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="涛哥的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          压测工具Wrk使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-13 14:57:08" itemprop="dateCreated datePublished" datetime="2019-12-13T14:57:08+08:00">2019-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-15 16:08:21" itemprop="dateModified" datetime="2019-12-15T16:08:21+08:00">2019-12-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&emsp;&emsp;以前一说到http的压力测试工具，多数人会说 ab、webbench、siege。 但这些工具不管是性能还是复杂度已经不能满足我们的需求了。 用wrk只是为了更好的获取吞吐。  </p>
+<h3 id="1-WRK安装"><a href="#1-WRK安装" class="headerlink" title="1.WRK安装"></a>1.WRK安装</h3><p>&emsp;&emsp;Mac  brew install mac<br>&emsp;&emsp;Linux <a href="https://github.com/wg/wrk.git" target="_blank" rel="noopener">https://github.com/wg/wrk.git</a> &amp;&amp; cd wrk &amp;&amp; make</p>
+<a id="more"></a>
+
+
+<h3 id="2-Wrk参数"><a href="#2-Wrk参数" class="headerlink" title="2. Wrk参数"></a>2. Wrk参数</h3><p>输入wrk –help<br>&emsp;&emsp;-c, –connections  需要模拟的连接数<br>&emsp;&emsp;-d, –duration   测试时间<br>&emsp;&emsp;-t, –threads   使用线程数量<br>&emsp;&emsp;-s, –script  加载lua脚本<br>&emsp;&emsp; -H, –header http头<br>&emsp;&emsp;–latency 显示延迟统计<br>&emsp;&emsp;–timeout 超时  </p>
+<h3 id="3-Wrk测试"><a href="#3-Wrk测试" class="headerlink" title="3. Wrk测试"></a>3. Wrk测试</h3><img src="/2019/12/13/tools-wrk/wrk1.png" class="">  
+
+<h3 id="3-Wrk-lua介绍"><a href="#3-Wrk-lua介绍" class="headerlink" title="3. Wrk lua介绍"></a>3. Wrk lua介绍</h3><p>&emsp;&emsp;不使用脚本wrk仅支持简单http get请求， 如需POST/PUT/DELETE请求需要写Lua脚本, 使用Lua脚本可以控制每次请求header/body等。   </p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wrk<span class="function">.<span class="keyword">method</span> = "<span class="title">POST</span>"</span></span><br><span class="line"><span class="function"><span class="title">wrk</span>.<span class="title">headers</span>["<span class="title">Content</span>-<span class="title">Type</span>"] = "<span class="title">application</span>/<span class="title">json</span>"</span></span><br><span class="line"><span class="function"><span class="title">wrk</span>.<span class="title">body</span> = "<span class="comment">&#123;"a":100, "b":200&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+<p>wrk -t4 -c2000 -d60s -T5s –script=post.lua –latency <a href="http://baidu.com" target="_blank" rel="noopener">http://baidu.com</a><br>上面简单Lua脚本时间wrk使用POST请求，header中Content-Type=application/json, body内容为{“a”:100, “b”:200}<br>wrk lua脚本函数说明：   </p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setup 线程出事后支持会调用一次   </span><br><span class="line">init 每次请求发送之前被调用。可以接受 wrk 命令行的额外参数  </span><br><span class="line"><span class="keyword">delay</span> 执行当前请求后，<span class="keyword">delay</span>，执行下个请求   </span><br><span class="line">request 请求信息， 可以设置 方法/请求头/<span class="keyword">body</span>信息  </span><br><span class="line">response 请求结果，可以统计请求信息，输出结果等</span><br></pre></td></tr></table></figure>
+
+<p>function setup(thread)</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- <span class="keyword">thread</span>提供了<span class="number">1</span>个属性，<span class="number">3</span>个方法</span><br><span class="line">-- <span class="keyword">thread</span>.addr 设置请求需要打到的ip</span><br><span class="line">-- <span class="keyword">thread</span>:get(name) 获取线程全局变量</span><br><span class="line">-- <span class="keyword">thread</span>:<span class="built_in">set</span>(name, value) 设置线程全局变量</span><br><span class="line">-- <span class="keyword">thread</span>:stop() 终止线程</span><br></pre></td></tr></table></figure>
+
+<p>function init(args)</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 每个线程仅调用1次，args 用于获取命令行中传入的参数, 例如 --env=pre</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(args)</span></span></span><br><span class="line">    <span class="comment">-- do something</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>function request()</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 每个线程调用多次，返回http请求</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">request</span><span class="params">()</span></span></span><br><span class="line">    <span class="comment">-- do something</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>function response(status, headers, body)<br>    – do something<br>end</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 每个线程调用多次，返回http响应</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">response</span><span class="params">(status, headers, body)</span></span></span><br><span class="line">    <span class="comment">-- do something</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+
+<p>function delay()</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 每个线程调用多次，发送下一个请求之前的延迟, 单位为ms</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">delay</span><span class="params">()</span></span></span><br><span class="line">    <span class="comment">-- do something</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>function done(summary, latency, requests)</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--可以用于自定义结果报表，整个过程中只执行一次</span></span><br><span class="line"><span class="comment">--[[latency.min              -- minimum value seen</span></span><br><span class="line">latency.max              <span class="comment">-- maximum value seen</span></span><br><span class="line">latency.mean             <span class="comment">-- average value seen</span></span><br><span class="line">latency.stdev            <span class="comment">-- standard deviation</span></span><br><span class="line">latency:percentile(<span class="number">99.0</span>) <span class="comment">-- 99th percentile value</span></span><br><span class="line">latency(i)               <span class="comment">-- raw value and count</span></span><br><span class="line"><span class="keyword">summary</span> = &#123;</span><br><span class="line">  duration = N,  <span class="comment">-- run duration in microseconds</span></span><br><span class="line">  requests = N,  <span class="comment">-- total completed requests</span></span><br><span class="line">  bytes    = N,  <span class="comment">-- total bytes received</span></span><br><span class="line">  errors   = &#123;</span><br><span class="line">    <span class="keyword">connect</span> = N, <span class="comment">-- total socket connection errors</span></span><br><span class="line">    <span class="keyword">read</span>    = N, <span class="comment">-- total socket read errors</span></span><br><span class="line">    <span class="keyword">write</span>   = N, <span class="comment">-- total socket write errors</span></span><br><span class="line">    status  = N, <span class="comment">-- total HTTP status codes &gt; 399</span></span><br><span class="line">    timeout = N  <span class="comment">-- total request timeouts</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;]]</span><br><span class="line"><span class="keyword">function</span> done(<span class="keyword">summary</span>, latency, requests)</span><br><span class="line">    <span class="comment">-- do something</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Wrk-lua例子"><a href="#3-Wrk-lua例子" class="headerlink" title="3. Wrk lua例子"></a>3. Wrk lua例子</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">bodyArray = &#123;</span><br><span class="line">    `&#123;<span class="string">"a"</span>:<span class="number">100</span>, <span class="string">"b"</span>:<span class="number">1000</span>&#125;`,</span><br><span class="line">    `&#123;<span class="string">"a"</span>:<span class="number">200</span>, <span class="string">"b"</span>:<span class="number">2000</span>&#125;`,</span><br><span class="line">    `&#123;<span class="string">"a"</span>:<span class="number">300</span>, <span class="string">"b"</span>:<span class="number">3000</span>&#125;`</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">request = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">        wrk.method = <span class="string">"POST"</span></span><br><span class="line">        wrk.body   = bodyArray[<span class="built_in">math</span>.<span class="built_in">random</span>(<span class="number">1</span>, #bodyArray)]</span><br><span class="line">        wrk.headers[<span class="string">"Content-Type"</span>] = <span class="string">"application/json"</span></span><br><span class="line">        <span class="keyword">return</span> wrk.<span class="built_in">format</span>()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">response</span><span class="params">(status, headers, body)</span></span></span><br><span class="line">    <span class="built_in">print</span>(body)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>./wrk -t 4 -c 100 -d 30s –latency –timeout 1s -s test.lua <a href="http://baidu.com" target="_blank" rel="noopener">http://baidu.com</a><br>使用上面lua脚本可以使用POST请求， 并且随机选择body中json信息， 输出response信息</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"># 工具</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/14/golang-nocopy/" rel="next" title="Golang中阻止拷贝NoCopy">
+      Golang中阻止拷贝NoCopy <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-WRK安装"><span class="nav-number">1.</span> <span class="nav-text">1.WRK安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Wrk参数"><span class="nav-number">2.</span> <span class="nav-text">2. Wrk参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Wrk测试"><span class="nav-number">3.</span> <span class="nav-text">3. Wrk测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Wrk-lua介绍"><span class="nav-number">4.</span> <span class="nav-text">3. Wrk lua介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Wrk-lua例子"><span class="nav-number">5.</span> <span class="nav-text">3. Wrk lua例子</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chris.xin"
+      src="/images/icon-256x256.ico">
+  <p class="site-author-name" itemprop="name">chris.xin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chrisxrepo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chrisxrepo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/xinchuantao@qq.com" title="E-Mail → xinchuantao@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chris.xin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
