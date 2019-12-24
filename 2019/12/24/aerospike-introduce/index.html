@@ -45,17 +45,21 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="关于">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;about&#x2F;index.html">
+  <meta name="description" content="&amp;emsp;&amp;emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aerospike介绍">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;24&#x2F;aerospike-introduce&#x2F;index.html">
 <meta property="og:site_name" content="涛哥的小屋">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-12-14T10:06:50.000Z">
-<meta property="article:modified_time" content="2019-12-14T10:12:04.362Z">
+<meta property="article:published_time" content="2019-12-24T09:15:42.000Z">
+<meta property="article:modified_time" content="2019-12-24T09:33:12.951Z">
 <meta property="article:author" content="chris.xin">
+<meta property="article:tag" content="nosql">
+<meta property="article:tag" content="aerospike">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/about/">
+<link rel="canonical" href="http://yoursite.com/2019/12/24/aerospike-introduce/">
 
 
 <script id="page-configurations">
@@ -63,14 +67,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
-    isPage: true,
+    isPost: true,
+    isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>关于 | 涛哥的小屋
-  </title>
+  <title>Aerospike介绍 | 涛哥的小屋</title>
   
 
 
@@ -175,44 +178,106 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/24/aerospike-introduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/icon-256x256.ico">
+      <meta itemprop="name" content="chris.xin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="涛哥的小屋">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Aerospike介绍
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">关于
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2019-12-24 17:15:42 / 修改时间：17:33:12" itemprop="dateCreated datePublished" datetime="2019-12-24T17:15:42+08:00">2019-12-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> &emsp;&emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势。</p>
+<a id="more"></a>
+
+<p><strong>1.Node</strong><br>aerospike集群节点。在版本4.0以后， 社区版最多支持8个节点， 商业版本为32个节点;在版本4.0之前， 社区版和商业版最大节点为127</p>
+<p><strong>2.Namespace</strong><br> &emsp;&emsp;aerospike中域的概念，类似mysql中db的概念。 社区版本每个集群最多2个namespace，商业版本为32； namespace命名长度不能超过31个字符</p>
+<p><strong>3.Set</strong><br> &emsp;&emsp;Set类似Mysql中表的概念。 每个Namespace中最多1023个Set， Set命名长度不能超过63个字符</p>
+<p><strong>4.Bin</strong><br> &emsp;&emsp;Bin类似Mysql中列的概念。 每个Namespace中Bin的个数最多为3K个， Bin命名长度不能超过15个字符</p>
+<p><strong>5.Record</strong><br> &emsp;&emsp;Record类似Mysql中一行数据。每个节点最大Record社区版4,294,967,296（由于4个字节用于存储引用，因此为2 ^ 32），企业版上为34,359,738,368（2 ^ 35）。这表示2TiB的RAM。 社区版在4.0之后每个集群最大Record数量为8*40亿=320亿，考虑到高可用， 备份因子应该设为2， 所以社区版本每个集群最大Record数量为160亿。 Record数据量超过160亿的话就需要考虑使用商业版本或则多个集</p>
+<p><strong>6.内存需求计算</strong><br> &emsp;&emsp;主key 64byte * number object ——— 1亿数据大约需要6G内存; raplica 默认设置为2 ，所以 ——— 1亿数据大约需要12G内存</p>
+<p><strong>7.Key组成</strong><br> &emsp;&emsp;key在内部根据RIPEMD-160算法，重新hash出一个key并取前20位，然后相对均衡的把数据分布到各个节点之上</p>
+<p> 详细介绍 <a href="https://kiwimg.gitbooks.io/aerospike_development_guide/content/" target="_blank" rel="noopener">https://kiwimg.gitbooks.io/aerospike_development_guide/content/</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nosql/" rel="tag"># nosql</a>
+              <a href="/tags/aerospike/" rel="tag"># aerospike</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/15/golang-restart/" rel="prev" title="Golang HTTP服务热重启">
+      <i class="fa fa-chevron-left"></i> Golang HTTP服务热重启
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
   </div>
 
 
