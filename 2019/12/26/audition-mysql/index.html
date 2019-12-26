@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-128x128.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="在后端面试中常被问到Mysql相关内容，这里整理了下面试中常被问到的mysql问题。 不是很全，后面遇到后会慢慢补充。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql常见面试题">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;26&#x2F;audition-mysql&#x2F;index.html">
+<meta property="og:site_name" content="涛哥的小屋">
+<meta property="og:description" content="在后端面试中常被问到Mysql相关内容，这里整理了下面试中常被问到的mysql问题。 不是很全，后面遇到后会慢慢补充。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;26&#x2F;audition-mysql&#x2F;mysql.png">
+<meta property="article:published_time" content="2019-12-26T03:57:13.000Z">
+<meta property="article:modified_time" content="2019-12-26T08:28:19.765Z">
+<meta property="article:author" content="chris.xin">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;26&#x2F;audition-mysql&#x2F;mysql.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/26/audition-mysql/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Mysql常见面试题 | 涛哥的小屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">涛哥的小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">8</span></a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/26/audition-mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/icon-256x256.ico">
+      <meta itemprop="name" content="chris.xin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="涛哥的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql常见面试题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-12-26 11:57:13 / 修改时间：16:28:19" itemprop="dateCreated datePublished" datetime="2019-12-26T11:57:13+08:00">2019-12-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在后端面试中常被问到Mysql相关内容，这里整理了下面试中常被问到的mysql问题。 不是很全，后面遇到后会慢慢补充。</p>
+<a id="more"></a>
+
+<h3 id="1-MySQL的事务隔离级别"><a href="#1-MySQL的事务隔离级别" class="headerlink" title="1.MySQL的事务隔离级别"></a>1.MySQL的事务隔离级别</h3><p><strong>未提交读(Read Uncommitted)</strong><br>允许脏读，其他事务只要修改了数据，即使未提交，本事务也能看到修改后的数据值。也就是可能读取到其他会话中未提交事务修改的数据<br><strong>提交读(Read Committed)</strong><br>只能读取到已经提交的数据。Oracle等多数数据库默认都是该级别 (不重复读)。<br><strong>可重复读(Repeated Read)</strong><br>可重复读。无论其他事务是否修改并提交了数据，在这个事务中看到的数据值始终不受其他事务影响。<br><strong>串行读(Serializable)</strong><br>完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞</p>
+<p>MySQL数据库(InnoDB引擎)默认使用可重复读（ Repeatable read)</p>
+<h3 id="2-存储引擎-MyISAM和InnoDB区别"><a href="#2-存储引擎-MyISAM和InnoDB区别" class="headerlink" title="2.存储引擎 MyISAM和InnoDB区别"></a>2.存储引擎 MyISAM和InnoDB区别</h3><p>1）InnoDB支持事务，MyISAM不支持。<br>2）MyISAM适合查询以及插入为主的应用，InnoDB适合频繁修改以及涉及到安全性较高的应用。<br>3）InnoDB支持外键，MyISAM不支持。<br>4）从MySQL5.5.5以后，InnoDB是默认引擎。<br>5）MyISAM支持全文类型索引，而InnoDB不支持全文索引。<br>6）InnoDB中不保存表的总行数，select count(<em>) from table时，InnoDB需要扫描整个表计算有多少行，但MyISAM只需简单读出保存好的总行数即可。注：当count(</em>)语句包含where条件时MyISAM也需扫描整个表。<br>7）对于自增长的字段，InnoDB中必须包含只有该字段的索引，但是在MyISAM表中可以和其他字段一起建立联合索引。<br>8）清空整个表时，InnoDB是一行一行的删除，效率非常慢。MyISAM则会重建表。MyisAM使用delete语句删除后并不会立刻清理磁盘空间，需要定时清理，命令：OPTIMIZE table dept;<br>9）InnoDB支持行锁（某些情况下还是锁整表，如 update table set a=1 where user like ‘%lee%’）<br>10）Myisam创建表生成三个文件：.frm 数据表结构 、 .myd 数据文件 、 .myi 索引文件，Innodb只生成一个 .frm文件，数据存放在ibdata1.log<br>现在一般都选用InnoDB，主要是MyISAM的全表锁，读写串行问题，并发效率锁表，效率低，MyISAM对于读写密集型应用一般是不会去选用的。</p>
+<h3 id="3-mysql为什么使用B-树作为索引的结构"><a href="#3-mysql为什么使用B-树作为索引的结构" class="headerlink" title="3.mysql为什么使用B+树作为索引的结构"></a>3.mysql为什么使用B+树作为索引的结构</h3><p>1.B+树的中间节点不保存数据，是纯索引,但是B树的中间节点是保存数据和索引的,相对来说,B+树磁盘页能容纳更多节点元素，更“矮胖”；<br>2.B+树查询必须查找到叶子节点，B树只要匹配到即可不用管元素位置，因此b+树查找更稳定（并不慢）；<br>3.对于范围查找来说，B+树只需遍历叶子节点链表即可，B树却需要重复地中序遍历,在项目中范围查找又很是常见的<br>4.增删文件（节点）时，效率更高，因为B+树的叶子节点包含所有关键字，并以有序的链表结构存储，这样可很好提高增删效率。<br>如下图：  </p>
+<img src="/2019/12/26/audition-mysql/mysql.png" class="">  
+<p>更多树相关参考：<a href="https://blog.csdn.net/a314774167/article/details/88111713" target="_blank" rel="noopener">https://blog.csdn.net/a314774167/article/details/88111713</a></p>
+<h3 id="4-MySQL如何进行SQL优化？"><a href="#4-MySQL如何进行SQL优化？" class="headerlink" title="4.MySQL如何进行SQL优化？"></a>4.MySQL如何进行SQL优化？</h3><p>（1）选择正确的存储引擎<br>&emsp;&emsp;两个存储引擎 MyISAM 和 InnoDB，每个引擎都有利有弊。<br>&emsp;&emsp;MyISAM 适合于一些需要大量查询的应用，但其对于有大量写操作并不是很好。甚至你只是需要update一个字段，整个表都会被锁起来，而别的进程，就算是读进程都无法操作直到读操作完成。另外，MyISAM 对于 SELECT COUNT(*) 这类的计算是超快无比的。<br>&emsp;&emsp;InnoDB 的趋势会是一个非常复杂的存储引擎，对于一些小的应用，它会比 MyISAM 还慢。但是它支持“行锁”，于是在写操作比较多的时候，会更优秀。并且，他还支持更多的高级应用，比如：事务。  </p>
+<p>（2）优化字段的数据类型<br>&emsp;&emsp;记住一个原则，越小的列会越快。如果一个表只会有几列罢了（比如说字典表，配置表），那么，我们就没有理由使用 INT 来做主键，使用 MEDIUMINT, SMALLINT 或是更小的 TINYINT 会更经济一些。如果你不需要记录时间，使用 DATE 要比 DATETIME 好得多。当然，你也需要留够足够的扩展空间。  </p>
+<p>（3）为搜索字段添加索引<br>&emsp;&emsp;索引并不一定就是给主键或是唯一的字段。如果在你的表中，有某个字段你总要会经常用来做搜索，那么最好是为其建立索引，除非你要搜索的字段是大的文本字段，那应该建立全文索引。</p>
+<p>(4)避免使用Select <em>从数据库里读出越多的数据，那么查询就会变得越慢。并且，如果你的数据库服务器和WEB服务器是两台独立的服务器的话，这还会增加网络传输的负载。即使你要查询数据表的所有字段，也尽量不要用</em>通配符，善用内置提供的字段排除定义也许能给带来更多的便利。  </p>
+<p>(5) 使用 ENUM 而不是 VARCHAR<br>&emsp;&emsp;ENUM 类型是非常快和紧凑的。在实际上，其保存的是 TINYINT，但其外表上显示为字符串。这样一来，用这个字段来做一些选项列表变得相当的完美。例如，性别、民族、部门和状态之类的这些字段的取值是有限而且固定的，那么，你应该使用 ENUM 而不是 VARCHAR。</p>
+<p>(6) 尽可能的使用 NOT NULL<br>&emsp;&emsp;除非你有一个很特别的原因去使用 NULL 值，你应该总是让你的字段保持 NOT NULL。 NULL其实需要额外的空间，并且，在你进行比较的时候，你的程序会更复杂。 当然，这里并不是说你就不能使用NULL了，现实情况是很复杂的，依然会有些情况下，你需要使用NULL值。</p>
+<p>(7)固定长度的表会更快<br>&emsp;&emsp;如果表中的所有字段都是“固定长度”的，整个表会被认为是 “static” 或 “fixed-length”。 例如，表中没有如下类型的字段： VARCHAR，TEXT，BLOB。只要你包括了其中一个这些字段，那么这个表就不是“固定长度静态表”了，这样，MySQL 引擎会用另一种方法来处理。<br>&emsp;&emsp;固定长度的表会提高性能，因为MySQL搜寻得会更快一些，因为这些固定的长度是很容易计算下一个数据的偏移量的，所以读取的自然也会很快。而如果字段不是定长的，那么，每一次要找下一条的话，需要程序找到主键。<br>&emsp;&emsp;并且，固定长度的表也更容易被缓存和重建。不过，唯一的副作用是，固定长度的字段会浪费一些空间，因为定长的字段无论你用不用，他都是要分配那么多的空间。 </p>
+<h3 id="4-MySQL索引优化？"><a href="#4-MySQL索引优化？" class="headerlink" title="4.MySQL索引优化？"></a>4.MySQL索引优化？</h3><p>&emsp;&emsp;1.进来使用完全索引<br>&emsp;&emsp;2.最佳左前缀法则(符合索引)，在查询时使用索引左边的多个字段(不能跳过某个字段)<br>&emsp;&emsp;3.不要在索引列上做任何操作，比如计算、使用函数、自动或手动进行类型转换，否则索引失效<br>&emsp;&emsp;4.尽量使用覆盖索引（只访问索引的查询（索引列包含查询列）），减少select *语句<br>&emsp;&emsp;5.mysql在使用不等于（!=或者&lt;&gt;）的时候无法使用索引会导致全表扫描。<br>&emsp;&emsp;6.is null，is not null 也无法使用索引。<br>&emsp;&emsp;7.like以通配符开头（like ‘%aaa’）mysql索引失效会变成全表扫描操作。<br>参考：<a href="https://blog.csdn.net/yhl_jxy/article/details/88636685" target="_blank" rel="noopener">https://blog.csdn.net/yhl_jxy/article/details/88636685</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/24/aerospike-introduce/" rel="prev" title="Aerospike介绍">
+      <i class="fa fa-chevron-left"></i> Aerospike介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/26/audition-redis/" rel="next" title="Redis常见面试题">
+      Redis常见面试题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-MySQL的事务隔离级别"><span class="nav-number">1.</span> <span class="nav-text">1.MySQL的事务隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-存储引擎-MyISAM和InnoDB区别"><span class="nav-number">2.</span> <span class="nav-text">2.存储引擎 MyISAM和InnoDB区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-mysql为什么使用B-树作为索引的结构"><span class="nav-number">3.</span> <span class="nav-text">3.mysql为什么使用B+树作为索引的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-MySQL如何进行SQL优化？"><span class="nav-number">4.</span> <span class="nav-text">4.MySQL如何进行SQL优化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-MySQL索引优化？"><span class="nav-number">5.</span> <span class="nav-text">4.MySQL索引优化？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chris.xin"
+      src="/images/icon-256x256.ico">
+  <p class="site-author-name" itemprop="name">chris.xin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chrisxrepo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chrisxrepo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/xinchuantao@qq.com" title="E-Mail → xinchuantao@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chris.xin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
