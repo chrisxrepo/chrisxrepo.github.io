@@ -45,21 +45,20 @@
   };
 </script>
 
-  <meta name="description" content="&amp;emsp;&amp;emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势">
+  <meta name="description" content="本文对面试&#x2F;笔试过程中经常会被问到的一些关于计算机网络的问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Aerospike介绍">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;24&#x2F;aerospike-introduce&#x2F;index.html">
+<meta property="og:title" content="网络常见面试题">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;26&#x2F;audition-network&#x2F;index.html">
 <meta property="og:site_name" content="涛哥的小屋">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势">
+<meta property="og:description" content="本文对面试&#x2F;笔试过程中经常会被问到的一些关于计算机网络的问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-12-24T09:15:42.000Z">
-<meta property="article:modified_time" content="2019-12-24T09:41:07.434Z">
+<meta property="article:published_time" content="2019-12-26T09:38:31.000Z">
+<meta property="article:modified_time" content="2019-12-27T08:03:24.296Z">
 <meta property="article:author" content="chris.xin">
-<meta property="article:tag" content="nosql">
-<meta property="article:tag" content="aerospike">
+<meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/12/24/aerospike-introduce/">
+<link rel="canonical" href="http://yoursite.com/2019/12/26/audition-network/">
 
 
 <script id="page-configurations">
@@ -73,7 +72,7 @@
   };
 </script>
 
-  <title>Aerospike介绍 | 涛哥的小屋</title>
+  <title>网络常见面试题 | 涛哥的小屋</title>
   
 
 
@@ -187,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/24/aerospike-introduce/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/26/audition-network/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/icon-256x256.ico">
@@ -200,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Aerospike介绍
+          网络常见面试题
         </h1>
 
         <div class="post-meta">
@@ -209,18 +208,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2019-12-24 17:15:42 / 修改时间：17:41:07" itemprop="dateCreated datePublished" datetime="2019-12-24T17:15:42+08:00">2019-12-24</time>
+              <time title="创建时间：2019-12-26 17:38:31" itemprop="dateCreated datePublished" datetime="2019-12-26T17:38:31+08:00">2019-12-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-27 16:03:24" itemprop="dateModified" datetime="2019-12-27T16:03:24+08:00">2019-12-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
                   </a>
                 </span>
             </span>
@@ -236,18 +241,54 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p> &emsp;&emsp;Aerospike是一个分布式，高可用的 K-V类型的Nosql数据库。提供类似传统数据库的ACID操作。aerospike最大的卖点就是可以存储在SSD上，并且保证和redis相同的查询性能。aerospike内部在访问SSD屏蔽了文件系统层级，直接访问地址，保证了数据的读取速度。 AS同时支持二级索引与聚合，支持简单的sql操作，相比于其他nosql数据库，有一定优势。</p>
+        <p>本文对面试/笔试过程中经常会被问到的一些关于计算机网络的问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。</p>
 <a id="more"></a>
 
-<p><strong>1.Node</strong><br>aerospike集群节点。在版本4.0以后， 社区版最多支持8个节点， 商业版本为32个节点;在版本4.0之前， 社区版和商业版最大节点为127</p>
-<p><strong>2.Namespace</strong><br> &emsp;&emsp;aerospike中域的概念，类似mysql中db的概念。 社区版本每个集群最多2个namespace，商业版本为32； namespace命名长度不能超过31个字符</p>
-<p><strong>3.Set</strong><br> &emsp;&emsp;Set类似Mysql中表的概念。 每个Namespace中最多1023个Set， Set命名长度不能超过63个字符</p>
-<p><strong>4.Bin</strong><br> &emsp;&emsp;Bin类似Mysql中列的概念。 每个Namespace中Bin的个数最多为3K个， Bin命名长度不能超过15个字符</p>
-<p><strong>5.Record</strong><br> &emsp;&emsp;Record类似Mysql中一行数据。每个节点最大Record社区版4,294,967,296（由于4个字节用于存储引用，因此为2 ^ 32），企业版上为34,359,738,368（2 ^ 35）。这表示2TiB的RAM。 社区版在4.0之后每个集群最大Record数量为8*40亿=320亿，考虑到高可用， 备份因子应该设为2， 所以社区版本每个集群最大Record数量为160亿。 Record数据量超过160亿的话就需要考虑使用商业版本或则多个集</p>
-<p><strong>6.内存需求计算</strong><br> &emsp;&emsp;主key 64byte * number object ——— 1亿数据大约需要6G内存; raplica 默认设置为2 ，所以 ——— 1亿数据大约需要12G内存</p>
-<p><strong>7.Key组成</strong><br> &emsp;&emsp;key在内部根据RIPEMD-160算法，重新hash出一个key并取前20位，然后相对均衡的把数据分布到各个节点之上</p>
-<p> <strong>8.SSD要求</strong><br>&emsp;&emsp;66％写33％读, 1.5K大小 ，测试工具：<a href="https://github.com/aerospike/act" target="_blank" rel="noopener">https://github.com/aerospike/act</a><br>&emsp;&emsp;消耗1ms &lt; 5%，消耗8ms &lt; 1% ，消耗64ms &lt;  0.1% </p>
-<p> 详细介绍 <a href="https://kiwimg.gitbooks.io/aerospike_development_guide/content/" target="_blank" rel="noopener">https://kiwimg.gitbooks.io/aerospike_development_guide/content/</a></p>
+<h3 id="1-网络协议的体系结构"><a href="#1-网络协议的体系结构" class="headerlink" title="1.网络协议的体系结构"></a>1.网络协议的体系结构</h3><p>1.OSI七层网络协议<br>物理层，数据链路层，网络层，运输层，会话层，表示层，应用层<br>2.TCP/ID四成网络协议<br>网络接口层, 网际/IP层， 运输/TCP/UDP层, 应用层<br>3.五层网络协议<br>物理层，数据链路层，网络层，运输层，应用层    </p>
+<h3 id="2-TCP三次握手和四次挥手"><a href="#2-TCP三次握手和四次挥手" class="headerlink" title="2.TCP三次握手和四次挥手"></a>2.TCP三次握手和四次挥手</h3><h4 id="1-三次握手"><a href="#1-三次握手" class="headerlink" title="1.三次握手"></a>1.三次握手</h4><p>&emsp;&emsp;三次握手的目的是建立可靠的通信信道，说到通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的  </p>
+<ul>
+<li>客户端–发送带有 SYN 标志的数据包–一次握手–服务端</li>
+<li>服务端–发送带有 SYN/ACK 标志的数据包–二次握手–客户端</li>
+<li>客户端–发送带有带有 ACK 标志的数据包–三次握手–服务端  </li>
+</ul>
+<h4 id="2-四次挥手"><a href="#2-四次挥手" class="headerlink" title="2.四次挥手"></a>2.四次挥手</h4><p>&emsp;&emsp;任何一方都可以在数据传送结束后发出连接释放的通知，待对方确认后进入半关闭状态。当另一方也没有数据再发送的时候，则发出连接释放通知，对方确认后就完全关闭了TCP连接。  </p>
+<ul>
+<li>主动方-发送一个FIN，用来关闭数据传送连接</li>
+<li>被动方-收到这个FIN，它发回一个ACK</li>
+<li>被动方-关闭与客户端的连接，发送一个FIN给主动方</li>
+<li>主动方-发回ACK报文确认</li>
+</ul>
+<h3 id="3-TCP协议如何保证可靠传输"><a href="#3-TCP协议如何保证可靠传输" class="headerlink" title="3.TCP协议如何保证可靠传输"></a>3.TCP协议如何保证可靠传输</h3><ul>
+<li>应用数据被分割成 TCP 认为最适合发送的数据块。</li>
+<li>TCP给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
+<li>校验和：TCP将保持它首部和数据的检验和。如果收到段的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段。</li>
+<li>TCP的接收端会丢弃重复的数据。</li>
+<li>流量控制：TCP连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP使用的流量控制协议是可变大小的滑动窗口协议(TCP利用滑动窗口实现流量控制)</li>
+<li>拥塞控制： 当网络拥塞时，减少数据的发送。</li>
+<li>停止等待协议: 为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组。</li>
+<li>超时重传： 当TCP发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段。</li>
+</ul>
+<h3 id="4-浏览器显示网页过程"><a href="#4-浏览器显示网页过程" class="headerlink" title="4.浏览器显示网页过程"></a>4.浏览器显示网页过程</h3><ul>
+<li>浏览器查询域名IP地址-DNS</li>
+<li>浏览器向web服务器发送http请求-cookies会发给服务器</li>
+<li>服务器处理请求，返回一个HTML响应</li>
+<li>浏览器显示HTML<br>通信细节：  </li>
+<li>UDP：浏览器使用UDP协议向DNS服务器获取服务器IP地址</li>
+<li>TCP：浏览器使用TCP协议和服务器建立连接</li>
+<li>IP：浏览器发送数据在网络层使用IP协议</li>
+<li>OPSF：路由器之间使用OPSF协议传递IP数据包</li>
+<li>ARP：路由器和服务通信时使用ARP将IP转换MAC地址</li>
+<li>HTTP：浏览器使用HTTP协议访问网页</li>
+</ul>
+<h3 id="5-HTTPS通讯过程"><a href="#5-HTTPS通讯过程" class="headerlink" title="5.HTTPS通讯过程"></a>5.HTTPS通讯过程</h3><ul>
+<li>客户端发送请求，支持协议版本，支持加密方法，一个随机数A</li>
+<li>服务器应答，确认协议版本，确认加密算法，服务https公钥,一个随机数B</li>
+<li>客户端发送请求，一个随机树C(使用http公钥加密)</li>
+<li>服务器应答，发送的所有内容的hash值，用来供客户端校验</li>
+<li>客户端和服务端都有ABC三个随机数，客户端和服务端用商定的算法利用3个随机数生成一个对话秘钥</li>
+<li>使用对话秘钥来通信， 下面就是http亲求过程</li>
+</ul>
+<h3 id="6-四层七层SLB区别"><a href="#6-四层七层SLB区别" class="headerlink" title="6.四层七层SLB区别"></a>6.四层七层SLB区别</h3><p>四层SLB: 通过报文中的IP地址和端口，再加上负载均衡设备所采用的负载均衡算法，最终确定选择后端哪台下游服务器。以TCP为例，客户端向负载均衡发送SYN请求建立第一次连接，通过配置的负载均衡算法选择一台后端服务器，并且将报文中的IP地址信息修改为后台服务器的IP地址信息，因此TCP三次握手连接是与后端服务器直接建立起来的。  性能好，后台服务器可以直接收到DDos攻击<br>七层SLB: 在应用层选择服务器，只能先与负载均衡设备进行TCP连接，然后负载均衡设备再与后端服务器建立另外一条TCP连接通道。因此，七层设备在网络性能损耗会更多一些。  性能较差，负载均衡可以隔离服务器，过滤恶意流量，较安全</p>
 
     </div>
 
@@ -257,8 +298,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/nosql/" rel="tag"># nosql</a>
-              <a href="/tags/aerospike/" rel="tag"># aerospike</a>
+              <a href="/tags/network/" rel="tag"># network</a>
           </div>
 
         
@@ -267,13 +307,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/12/15/golang-restart/" rel="prev" title="Golang HTTP服务热重启">
-      <i class="fa fa-chevron-left"></i> Golang HTTP服务热重启
+    <a href="/2019/12/26/audition-redis/" rel="prev" title="Redis常见面试题">
+      <i class="fa fa-chevron-left"></i> Redis常见面试题
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/12/26/audition-mysql/" rel="next" title="Mysql常见面试题">
-      Mysql常见面试题 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -311,6 +348,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-网络协议的体系结构"><span class="nav-number">1.</span> <span class="nav-text">1.网络协议的体系结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-TCP三次握手和四次挥手"><span class="nav-number">2.</span> <span class="nav-text">2.TCP三次握手和四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-三次握手"><span class="nav-number">2.1.</span> <span class="nav-text">1.三次握手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-四次挥手"><span class="nav-number">2.2.</span> <span class="nav-text">2.四次挥手</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-TCP协议如何保证可靠传输"><span class="nav-number">3.</span> <span class="nav-text">3.TCP协议如何保证可靠传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-浏览器显示网页过程"><span class="nav-number">4.</span> <span class="nav-text">4.浏览器显示网页过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-HTTPS通讯过程"><span class="nav-number">5.</span> <span class="nav-text">5.HTTPS通讯过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-四层七层SLB区别"><span class="nav-number">6.</span> <span class="nav-text">6.四层七层SLB区别</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
