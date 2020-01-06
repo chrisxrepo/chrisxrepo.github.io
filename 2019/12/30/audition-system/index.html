@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-128x128.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="有过面试经历的人都知道操作系统是面试官必问的几大类型题目之一. 本文对面试&#x2F;笔试过程中经常会被问到的一些关于操作系统问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统相关面试">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;audition-system&#x2F;index.html">
+<meta property="og:site_name" content="涛哥的小屋">
+<meta property="og:description" content="有过面试经历的人都知道操作系统是面试官必问的几大类型题目之一. 本文对面试&#x2F;笔试过程中经常会被问到的一些关于操作系统问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-30T02:48:45.000Z">
+<meta property="article:modified_time" content="2020-01-04T09:17:37.692Z">
+<meta property="article:author" content="chris.xin">
+<meta property="article:tag" content="os">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/30/audition-system/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>操作系统相关面试 | 涛哥的小屋</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">涛哥的小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/30/audition-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/icon-256x256.ico">
+      <meta itemprop="name" content="chris.xin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="涛哥的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          操作系统相关面试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-30 10:48:45" itemprop="dateCreated datePublished" datetime="2019-12-30T10:48:45+08:00">2019-12-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-04 17:17:37" itemprop="dateModified" datetime="2020-01-04T17:17:37+08:00">2020-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>有过面试经历的人都知道操作系统是面试官必问的几大类型题目之一. 本文对面试/笔试过程中经常会被问到的一些关于操作系统问题进行了梳理和总结。 不是很全，后面遇到后会慢慢补充。</p>
+<a id="more"></a>
+
+<h3 id="1-说明进程和线程以及它们的区别"><a href="#1-说明进程和线程以及它们的区别" class="headerlink" title="1.说明进程和线程以及它们的区别"></a>1.说明进程和线程以及它们的区别</h3><p>进程：是并发执行的程序在执行过程中分配和管理资源的基本单位，是一个动态概念，竞争计算机系统资源的基本单位。<br>线程：是进程的一个执行单元，是内核调度实体。比进程更小的独立运行的基本单位。线程也被称为轻量级进程。<br>区别：<br>&emsp;&emsp;1.同一进程的线程共享本进程的地址空间，而进程之间则是独立的地址空间。<br>&emsp;&emsp;2.同一进程的线程共享本进程的资源(内存/IO/CPU等)，而进程之间资源是独立的。<br>&emsp;&emsp;3.进程可以独立执行，而进程不可以，必须依托进程存在<br>&emsp;&emsp;4.线程是OS的基本调度单位，而进程不是  </p>
+<h3 id="2-线程之间同步方式"><a href="#2-线程之间同步方式" class="headerlink" title="2.线程之间同步方式"></a>2.线程之间同步方式</h3><p>&emsp;&emsp;1.互斥量(锁)：只有拥有互斥对象的线程才有访问公共资源的权限，可以保证公共资源不会被多个线程同时访问<br>&emsp;&emsp;2.信号量：信号量也是内核对象。它允许多个线程在同一时刻访问同一资源，但是需要限制在同一时刻访问此资源的最大线程数目<br>&emsp;&emsp;3.事件(信号)：通过通知操作的方式来保持多线程的同步，还可以方便的实现多线程的优先级比较的操作  </p>
+<h3 id="3-进程之间同步方式"><a href="#3-进程之间同步方式" class="headerlink" title="3.进程之间同步方式"></a>3.进程之间同步方式</h3><p>&emsp;&emsp;1.管道:有命名管道和非命名管道之分，非命名管道只能用于父子进程通讯，命名管道可用于非父子进程，命名管道就是FIFO，管道是先进先出的通讯方式<br>&emsp;&emsp;2.消息队列：用于进程之间的通讯，首先在一个进程中创建一个消息队列，然后再往消息队列中写数据，而另一个进程则从那个消息队列读取数据。消息队列是用文件的方式建立的,只有把消息读取后，消息才会消失<br>&emsp;&emsp;3.信号量：不能传递复杂消息，只能用来同步<br>&emsp;&emsp;4.共享内存：只要创建一个共享内存区，其它进程就能访问到这个共享内存区中的数据(读写)</p>
+<h3 id="4-ThreadLocal机制"><a href="#4-ThreadLocal机制" class="headerlink" title="4.ThreadLocal机制"></a>4.ThreadLocal机制</h3><p>&emsp;&emsp;Threadlocal就从另一个角度来解决多线程的并发访问，Threadlocal会为每一个线程维护和绑定变量副本，从而隔离了多个线程的数据共享，每一个线程都拥有自己的变量副本，从而也就没有必要对该变量进行同步了。<br>&emsp;&emsp;ThreadLocal并不能替代同步机制，两者面向的问题领域不同。同步机制是为了同步多个线程对相同资源的并发访问，是为了多个线程之间进行通信；而ThreadLocal是隔离多个线程的数据共享，从根本上就不在多个线程之间共享资源，这样当然不需要对多个线程进行同步了。</p>
+<h3 id="5-死锁"><a href="#5-死锁" class="headerlink" title="5.死锁"></a>5.死锁</h3><p>&emsp;&emsp;死锁是指多个进程在运行过程中，因为争夺资源而造成的一种僵局，如果没有外力推进，处于僵局中的进程就无法继续执行。</p>
+<h4 id="死锁原因："><a href="#死锁原因：" class="headerlink" title="死锁原因："></a>死锁原因：</h4><ul>
+<li>竞争资源：请求同一有限资源的进程数多于可用资源数  </li>
+<li>进程推进顺序非法：进程执行中，请求和释放资源顺序不合理，如资源等待链</li>
+</ul>
+<h4 id="死锁产生的必要条件："><a href="#死锁产生的必要条件：" class="headerlink" title="死锁产生的必要条件："></a>死锁产生的必要条件：</h4><ul>
+<li>互斥条件:进程对所分配的资源进行排他性的使用</li>
+<li>请求和保持条件：进程被阻塞的时候并不释放锁申请到的资源</li>
+<li>不可剥夺条件：进程对于已经申请到的资源在使用完成之前不可以被剥夺</li>
+<li>环路等待条件：发生死锁的时候存在的一个 进程-资源 环形等待链</li>
+</ul>
+<h4 id="死锁处理："><a href="#死锁处理：" class="headerlink" title="死锁处理："></a>死锁处理：</h4><ul>
+<li>预防死锁：破坏产生死锁的4个必要条件中的一个或者多个；实现起来比较简单，但是如果限制过于严格会降低系统资源利用率以及吞吐量</li>
+<li>避免死锁：在资源的动态分配中，防止系统进入不安全状态(可能产生死锁的状态)-如银行家算法</li>
+<li>检测死锁：允许系统运行过程中产生死锁，在死锁发生之后，采用一定的算法进行检测，并确定与死锁相关的资源和进程，采取相关方法清除检测到的死锁。实现难度大</li>
+<li>解除死锁：与死锁检测配合，将系统从死锁中解脱出来（撤销进程或者剥夺资源）。对检测到的和死锁相关的进程以及资源，通过撤销或者挂起的方式，释放一些资源并将其分配给处于阻塞状态的进程，使其转变为就绪态。实现难度大同</li>
+</ul>
+<h3 id="6-内存段页式管理"><a href="#6-内存段页式管理" class="headerlink" title="6.内存段页式管理"></a>6.内存段页式管理</h3><h4 id="1-虚地址的构成"><a href="#1-虚地址的构成" class="headerlink" title="1.虚地址的构成"></a>1.虚地址的构成</h4><p>&emsp;&emsp;一个进程中所包含的具有独立逻辑功能的程序或数据仍被划分为段，并有各自的段号s。这反映相继承了段式管理的特征。其次，对于段s中的程序或数据，则按照一定的大小将其划分为不同的页。和页式系统一样，最后不足一页的部分仍占一页。这反映了段页式管理中的页式特征。从而，段页式管理时的进程的虚拟地址空间中的虚拟地址由三部分组成：即段号s，页号P和页内相对地址d。虚拟空间的最小单位是页而不是段，从而内存可用区也就被划分成为着干个大小相等的页面，且每段所拥有的程序和数据在内存中可以分开存放。分段的大小也不再受内存可用区的限制。</p>
+<h4 id="2-段表和页表"><a href="#2-段表和页表" class="headerlink" title="2.段表和页表"></a>2.段表和页表</h4><p>&emsp;&emsp;为了实现段页式管理，系统必须为每个作业或进程建立一张段表以管理内存分配与释放、缺段处理、存储保护相地址变换等。另外，由于一个段又被划分成了若干页，每个段又必须建立一张页表以把段中的虚页变换成内存中的实际页面。显然，与页式管理时相同，页表中也要有相应的实现缺页中断处理和页面保护等功能的表项。另外，由于在段页式管理中，页表不再是属于进程而是属于某个段，因此，段表中应有专项指出该段所对应页表的页表始址和页表长度。  </p>
+<h4 id="3-动态地址变换过程"><a href="#3-动态地址变换过程" class="headerlink" title="3.动态地址变换过程"></a>3.动态地址变换过程</h4><p>&emsp;&emsp;在一般使用段页式存储管理方式的计算机系统中，都在内存中辟出一块固定的区域存放进程的段表和页表。因此，在段页式管理系统中，要对内存中指令或数据进行一次存取的话，至少需要访问三次以上的内存：<br>第一次是由段表地址寄存器得段表始址后访问段表，由此取出对应段的页表在内存中的地址。<br>第二次则是访问页表得到所要访问的物理地址。<br>第三次才能访问真正需要访问的物理单元。  </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/os/" rel="tag"># os</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/26/audition-network/" rel="prev" title="网络常见面试题">
+      <i class="fa fa-chevron-left"></i> 网络常见面试题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/01/algorithm-sort/" rel="next" title="排序算法">
+      排序算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-说明进程和线程以及它们的区别"><span class="nav-number">1.</span> <span class="nav-text">1.说明进程和线程以及它们的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程之间同步方式"><span class="nav-number">2.</span> <span class="nav-text">2.线程之间同步方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-进程之间同步方式"><span class="nav-number">3.</span> <span class="nav-text">3.进程之间同步方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ThreadLocal机制"><span class="nav-number">4.</span> <span class="nav-text">4.ThreadLocal机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-死锁"><span class="nav-number">5.</span> <span class="nav-text">5.死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#死锁原因："><span class="nav-number">5.1.</span> <span class="nav-text">死锁原因：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#死锁产生的必要条件："><span class="nav-number">5.2.</span> <span class="nav-text">死锁产生的必要条件：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#死锁处理："><span class="nav-number">5.3.</span> <span class="nav-text">死锁处理：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-内存段页式管理"><span class="nav-number">6.</span> <span class="nav-text">6.内存段页式管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-虚地址的构成"><span class="nav-number">6.1.</span> <span class="nav-text">1.虚地址的构成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-段表和页表"><span class="nav-number">6.2.</span> <span class="nav-text">2.段表和页表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-动态地址变换过程"><span class="nav-number">6.3.</span> <span class="nav-text">3.动态地址变换过程</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="chris.xin"
+      src="/images/icon-256x256.ico">
+  <p class="site-author-name" itemprop="name">chris.xin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chrisxrepo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chrisxrepo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/xinchuantao@qq.com" title="E-Mail → xinchuantao@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chris.xin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
